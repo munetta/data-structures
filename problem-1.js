@@ -1,6 +1,4 @@
 
-//create a folder structure and add the following functions 
-
 let root_folder = { 
     wow: { 
      file0: 'awesome1.js',
@@ -106,8 +104,29 @@ function add_file(folders_, path_, folder_to_insert_, file_name_) {
  }
 }
 
-function add_folder() { 
-    
+function add_folder(folders_, path_, folder_to_insert_, folder_name_) { 
+ for (const [key, value] of Object.entries(folders_)) {
+  if(typeof(value) === 'object') { 
+   path_.push(`${key}/`)
+   if(path_.join('') === folder_to_insert_) { 
+    for (const [key2, file] of Object.entries(folders_[key])) {
+     if(typeof(file) === 'object' && key2 === folder_name_) { 
+      console.log('folder already exists');
+      return;
+     }
+    }
+    folders_[key][folder_name_] = {
+     file0: 'aweosme1.js'
+    }; 
+    return;
+   }
+   add_folder(value, path_, folder_to_insert_, folder_name_);
+   path_.pop();
+  }
+ }
+ if(path_.length === 1) { 
+  console.log('folder to insert does not exist');
+ }
 }
 
 function copy_file_to() { 
@@ -117,4 +136,5 @@ function copy_file_to() {
 delete_file(root_folder, ['/root_folder/'], '/root_folder/wow/awesome7.js');
 delete_folder(root_folder, ['/root_folder/'], '/root_folder/wow/cool/laugh/');
 add_file(root_folder, ['/root_folder/'], '/root_folder/wow/cool/', 'awesome8.js');
+add_folder(root_folder, ['/root_folder/'], '/root_folder/wow/cool/', 'sick');
 recurse(root_folder, ['/root_folder/']);
