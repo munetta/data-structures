@@ -111,14 +111,6 @@ router.post('/client_link_make_purchase', async function(req, res) { //make sure
 
 }); 
 
-//turn this into a rockstar card link business and have random people represent they shit and take all the money. give them the card at colleges.
-//go to all the colleges and sell there. one person has a business card and overcharges the shit out of preppy little college bitches
-//employees have to compare the customers at the same time. we want to turn them into clients. 
-//make sure to do this at all colleges
-//how many colleges are there in the united states
-//get the students in groups and take a yes/no vote then pass out the cards. use a mega-phone and start cheering. And make sure to have your school spirit.
-//once you get the exact amount of purchases you need, bulk email everyone the date and time it will be at. You are in control. 
-//give them all the money... 2444 * 
 
 
 
