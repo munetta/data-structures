@@ -1,4 +1,8 @@
-unfinished code i just wrote
+//unfinshed 
+//author: alex
+//recipitent: FRANKLIN YMCA MR C
+
+//grid
 
 let grid = [
   [0,0,0,0,0,0,0,0,0,0],
@@ -26,6 +30,7 @@ function placement_of_random_apples() {
 
 let pause_timeout = false;
 
+//the snake with a single leading node and trailing nodes
 let snake = [{ 
   x: 0, 
   y: 0, 
@@ -34,19 +39,22 @@ let snake = [{
   turns: []
 }];  
 
-function on_key_up(e) {
+//assigning a new direction to every node starting where the leading_node is
+document.addEventListener('keydown', (event) => {
   pause_timeout = true;
-  if(e.key === 'right') { 
+  if(event.key ===  37) { 
     go_east();
-  } else if(e.key === 'left') { 
+  } else if(event.key ===  39) { 
     go_west();
-  } else if(e.key === 'up') { 
+  } else if(event.key ===  38) { 
     go_north();
-  } else if(e.key === 'down') { 
+  } else if(event.key ===  40) { 
     go_south();
+  } else { 
+    return;
   }
   pause_timeout = false;
-}
+});
 
 function go_south() { 
   if(
@@ -112,10 +120,12 @@ function go_east() {
   } 
 } 
 
+//moving each node of the snake in its current direction
 function move_snake() { 
+
   for(let i = 0; i < snake.length; i++) { 
 
-    
+    //node has landed on its next turning point, turn the node and remove the turning point
     if(
       typeof snake[i].turns[0] !== 'undefined' && 
       snake[i].x === snake[i].turns[0].turn_at_x_coordinate && 
@@ -125,6 +135,7 @@ function move_snake() {
       snake[i].turns.unshift();
     }
 
+    //the leading node ran into an apple, use the last node to copy into the new last node
     if(i === 0 && grid[snake[i].x][snake[i].y] === 2) { 
       grid[snake[i].x][snake[i].y] = 0; 
       let last_node = snake[snake.length - 1];
@@ -137,6 +148,7 @@ function move_snake() {
       })
     }
 
+    //evaluate direction
     if(snake[i].direction === 'n') {
       snake[i].y += 1;
     } else if(snake[i].direction === 's') { 
@@ -147,6 +159,7 @@ function move_snake() {
       snake[i].x -= 1;
     }
 
+    //if leading snake node and off the gird, player loses 
     if(i === 0 && typeof grid[snake[i].x][snake[i].y] === 'undefined') { 
       return { 
         error: true, 
@@ -175,7 +188,9 @@ function display_snake() {
   }
 
   setTimeout(function() {
-    return move_snake();
+    if(!pause_timeout) {
+      return move_snake();
+    }
   }, 1000)
 
 }
