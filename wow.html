@@ -1,5 +1,5 @@
-trying to make snake game. have not ran
-//change order of x and y to fit multidimensional array
+trying to make snake game. have not run
+change order of x and y - x is north south y is east west
   
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +28,8 @@ let grid = [
 
 let wait_until_snake_is_done_updating_to_update_direction = 'waiting';
 
+//x is acting like the y axis - north south
+//y is acting like the x axis - east west
 let snake = [{ 
   x: 0, 
   y: 0, 
@@ -40,7 +42,7 @@ function setup_grid() {
 
   for(let i = 0; i < grid.length; i++) { 
     for(let j = 0; j < grid[i].length; j++) { 
-      let r = Math.min.random(0,4);
+      let r = Math.min(Math.random(0,4));
       if(r === 4) { 
         grid[i][j] = 2;
       }
@@ -63,7 +65,7 @@ function setup_grid() {
     div_element += '<br>'; 
   }
 
-  document.querySelector('#grid').appendChild(document.createElement(div_element));
+  document.querySelector('#grid').innerHTML = div_element;
 
 }
 
@@ -83,57 +85,65 @@ document.addEventListener('keydown', (event) => {
 
 function go_south() { 
   if(snake[0].direction === 's' || snake[0].direction === 'n') return;
-  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') return go_south();
+  if(wait_until_snake_is_done_updating_to_add_a_turn === 'waiting') return go_south();
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
       turn_at_y_coordinate: snake[0].y, 
-      direction: 's'
+      direction_for_node_to_turn_in: 's'
     })
   } 
 } 
 
 function go_north() { 
   if(snake[0].direction === 's' || snake[0].direction === 'n') return;
-  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') return go_north();
+  if(wait_until_snake_is_done_updating_to_add_a_turn === 'waiting') return go_north();
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
       turn_at_y_coordinate: snake[0].y, 
-      direction: 'n'
+      direction_for_node_to_turn_in: 'n'
     })
   }
 } 
 
 function go_west() { 
   if(snake[0].direction === 'w' || snake[0].direction === 'e') return;
-  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') return go_west();
+  if(wait_until_snake_is_done_updating_to_add_a_turn === 'waiting') return go_west();
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
       turn_at_y_coordinate: snake[0].y, 
-      direction: 'w'
+      direction_for_node_to_turn_in: 'w'
     })
   }
 } 
 
 function go_east() { 
   if(snake[0].direction === 'e' || snake[0].direction === 'w') return;
-  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') return go_east();
+  if(wait_until_snake_is_done_updating_to_add_a_turn === 'waiting') return go_east();
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({
       turn_at_x_coordinate: snake[0].x, 
       turn_at_y_coordinate: snake[0].y, 
-      direction: 'e'
+      direction_for_node_to_turn_in: 'e'
     })
   } 
 } 
 
 function move_snake() { 
 
-  wait_until_snake_is_done_updating_to_update_direction = 'waiting';
+  wait_until_snake_is_done_updating_to_add_a_turn = 'waiting'; 
+  let added_snake_after_eating_apple = null;
 
   for(let i = 0; i < snake.length; i++) {
+
+    if(i === 0 && typeof grid[snake[i].x][snake[i].y] === 'undefined') { 
+      return { 
+        error: true, 
+        message: 'you ran into a wall'
+      }
+    }
 
     if(
       typeof snake[i].turns[0] !== 'undefined' && 
@@ -147,35 +157,32 @@ function move_snake() {
     if(i === 0 && grid[snake[i].x][snake[i].y] === 2) { 
       grid[snake[i].x][snake[i].y] = 0;
       let last_node = snake[snake.length - 1];
-      snake.push({ 
-        x: last_node.direction === 'e' ? last_node.x -= 1 : last_node.direction === 'w' ? last_node.x += 1 : last_node.x, 
-        y: last_node.direction === 'n' ? last_node.y -= 1 : last_node.direction === 's' ? last_node.y += 1 : last_node.y, 
+      added_snake_after_eating_apple = { 
+        x: last_node.direction === 'n' ? last_node.x -= 1 : last_node.direction === 's' ? last_node.x += 1 : last_node.x, 
+        y: last_node.direction === 'e' ? last_node.y -= 1 : last_node.direction === 'w' ? last_node.y += 1 : last_node.y, 
         direction: last_node.direction, 
         type_: 'trailing_node', 
         turns: last_node.turns
-      });
+      };
     }
 
     if(snake[i].direction === 'n') {
-      snake[i].y += 1;
-    } else if(snake[i].direction === 's') { 
-      snake[i].y -= 1;
-    } else if(snake[i].direction === 'e') { 
       snake[i].x += 1;
-    } else if(snake[i].direction === 'w') { 
+    } else if(snake[i].direction === 's') { 
       snake[i].x -= 1;
-    }
-
-    if(i === 0 && typeof grid[snake[i].x][snake[i].y] === 'undefined') { 
-      return { 
-        error: true, 
-        message: 'you ran into a wall'
-      }
+    } else if(snake[i].direction === 'e') { 
+      snake[i].y += 1;
+    } else if(snake[i].direction === 'w') { 
+      snake[i].y -= 1;
     }
 
   }
 
-  wait_until_snake_is_done_updating_to_update_direction = 'finished';
+  wait_until_snake_is_done_updating_to_add_a_turn = 'finished';
+
+  if(added_snake_after_eating_apple !== null) {
+    snakes.push(added_snake_after_eating_apple);
+  }
 
   display_grid();
 
@@ -202,7 +209,7 @@ function display_grid() {
   }
 
   for(let i = 0; i < snake.length; i++) { 
-    grid[snake[i].x][snake[i].y] = 1
+    grid[snake[i].x][snake[i].y] = 1;
   }
 
   for(let i = 0; i < grid.length; i++) { 
@@ -228,3 +235,4 @@ move_snake();
 
 </script>
 </html>
+
