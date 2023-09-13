@@ -1,4 +1,5 @@
 trying to make snake game. have not ran
+//change order of x and y to fit multidimensional array
   
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +11,6 @@ trying to make snake game. have not ran
 <body>
 <div id = 'grid'></div>
 </body>
-
 <script>
 
 let grid = [
@@ -82,10 +82,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 function go_south() { 
-  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') { 
-    return go_south();
-  }
   if(snake[0].direction === 's' || snake[0].direction === 'n') return;
+  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') return go_south();
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
@@ -96,10 +94,8 @@ function go_south() {
 } 
 
 function go_north() { 
-  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') { 
-    return go_north();
-  }
   if(snake[0].direction === 's' || snake[0].direction === 'n') return;
+  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') return go_north();
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
@@ -110,10 +106,8 @@ function go_north() {
 } 
 
 function go_west() { 
-  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') { 
-    return go_west();
-  }
   if(snake[0].direction === 'w' || snake[0].direction === 'e') return;
+  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') return go_west();
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
@@ -124,10 +118,8 @@ function go_west() {
 } 
 
 function go_east() { 
-  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') { 
-    return go_east();
-  }
   if(snake[0].direction === 'e' || snake[0].direction === 'w') return;
+  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') return go_east();
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({
       turn_at_x_coordinate: snake[0].x, 
@@ -226,7 +218,7 @@ function display_grid() {
   }
 
   return setTimeout(function() { 
-    move_snake()
+    return move_snake()
   }, 3000)
 
 }
