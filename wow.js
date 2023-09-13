@@ -1,10 +1,20 @@
-//unfinshed 
-//alex e
+trying to make snake game. have not ran
+  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+</head>
+<body>
+<div id = 'grid'></div>
+</body>
 
-//grid
+<script>
 
 let grid = [
-  [0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0], 
   [0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0]
@@ -16,20 +26,8 @@ let grid = [
   [0,0,0,0,0,0,0,0,0,0]
 ]; 
 
-function placement_of_random_apples() { 
-  for(let i = 0; i < grid.length; i++) { 
-    for(let j = 0; j < grid[i].length; j++) { 
-      let r = Math.min.random(0,4);
-      if(r === 4) { 
-        grid[i][j] = 2;
-      }
-    }
-  }
-}
+let wait_until_snake_is_done_updating_to_update_direction = 'waiting';
 
-let pause_timeout = false;
-
-//the snake with a single leading node and trailing nodes
 let snake = [{ 
   x: 0, 
   y: 0, 
@@ -38,9 +36,38 @@ let snake = [{
   turns: []
 }];  
 
-//assigning a new direction to every node starting where the leading_node is
+function setup_grid() {
+
+  for(let i = 0; i < grid.length; i++) { 
+    for(let j = 0; j < grid[i].length; j++) { 
+      let r = Math.min.random(0,4);
+      if(r === 4) { 
+        grid[i][j] = 2;
+      }
+    }
+  }
+
+  let div_element = ``;
+  for(let i = 0; i < grid.length; i++) { 
+    for(let j = 0; j < grid[i].length; j++) { 
+      let color;
+      if(grid[i][j] === 1) { 
+        color = 'red';
+      } else if(grid[i][j] === 2) { 
+        color = 'purple'
+      } else { 
+        color = 'black';
+      }
+      div_element += `<div id = '${i}-${j}' style = 'border: 1px solid ${color}; height: 20px; width: 20px; display: in-line-block; background-color: ${color}></div>'`;
+    }
+    div_element += '<br>'; 
+  }
+
+  document.querySelector('#grid').appendChild(document.createElement(div_element));
+
+}
+
 document.addEventListener('keydown', (event) => {
-  pause_timeout = true;
   if(event.key ===  37) { 
     go_east();
   } else if(event.key ===  39) { 
@@ -52,16 +79,13 @@ document.addEventListener('keydown', (event) => {
   } else { 
     return;
   }
-  pause_timeout = false;
 });
 
 function go_south() { 
-  if(
-    snake[0].direction === 's' || 
-    snake[0].direction === 'n'
-  ) {
-    return;
+  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') { 
+    return go_south();
   }
+  if(snake[0].direction === 's' || snake[0].direction === 'n') return;
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
@@ -72,12 +96,10 @@ function go_south() {
 } 
 
 function go_north() { 
-  if(
-    snake[0].direction === 's' || 
-    snake[0].direction === 'n'
-  ) {
-    return;
+  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') { 
+    return go_north();
   }
+  if(snake[0].direction === 's' || snake[0].direction === 'n') return;
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
@@ -88,12 +110,10 @@ function go_north() {
 } 
 
 function go_west() { 
-  if(
-    snake[0].direction === 'w' || 
-    snake[0].direction === 'e'
-  ) {
-    return;
+  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') { 
+    return go_west();
   }
+  if(snake[0].direction === 'w' || snake[0].direction === 'e') return;
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
@@ -104,12 +124,10 @@ function go_west() {
 } 
 
 function go_east() { 
-  if(
-    snake[0].direction === 'e' || 
-    snake[0].direction === 'w'
-  ) {
-    return;
+  if(wait_until_snake_is_done_updating_to_update_direction === 'waiting') { 
+    return go_east();
   }
+  if(snake[0].direction === 'e' || snake[0].direction === 'w') return;
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({
       turn_at_x_coordinate: snake[0].x, 
@@ -119,12 +137,12 @@ function go_east() {
   } 
 } 
 
-//moving each node of the snake in its current direction
 function move_snake() { 
 
-  for(let i = 0; i < snake.length; i++) { 
+  wait_until_snake_is_done_updating_to_update_direction = 'waiting';
 
-    //node has landed on its next turning point, turn the node and remove the turning point
+  for(let i = 0; i < snake.length; i++) {
+
     if(
       typeof snake[i].turns[0] !== 'undefined' && 
       snake[i].x === snake[i].turns[0].turn_at_x_coordinate && 
@@ -134,9 +152,8 @@ function move_snake() {
       snake[i].turns.unshift();
     }
 
-    //the leading node ran into an apple, use the last node to copy into the new last node
     if(i === 0 && grid[snake[i].x][snake[i].y] === 2) { 
-      grid[snake[i].x][snake[i].y] = 0; 
+      grid[snake[i].x][snake[i].y] = 0;
       let last_node = snake[snake.length - 1];
       snake.push({ 
         x: last_node.direction === 'e' ? last_node.x -= 1 : last_node.direction === 'w' ? last_node.x += 1 : last_node.x, 
@@ -144,10 +161,9 @@ function move_snake() {
         direction: last_node.direction, 
         type_: 'trailing_node', 
         turns: last_node.turns
-      })
+      });
     }
 
-    //evaluate direction
     if(snake[i].direction === 'n') {
       snake[i].y += 1;
     } else if(snake[i].direction === 's') { 
@@ -158,7 +174,6 @@ function move_snake() {
       snake[i].x -= 1;
     }
 
-    //if leading snake node and off the gird, player loses 
     if(i === 0 && typeof grid[snake[i].x][snake[i].y] === 'undefined') { 
       return { 
         error: true, 
@@ -168,30 +183,56 @@ function move_snake() {
 
   }
 
-  display_snake();
+  wait_until_snake_is_done_updating_to_update_direction = 'finished';
+
+  display_grid();
 
 }
 
-function display_snake() { 
+function display_grid() {
 
+  let snake_node_count = 0;
+  let breakout = false;
   for(let i = 0; i < grid.length; i++) { 
+    if(breakout) { 
+      break;
+    }
     for(let j = 0; j < grid[i].length; j++) { 
-      if(grid[i][j] === 1) {
-        grid[i][j] = 0;
+      if(grid[i][j] === 1) { 
+        grid[i][j] = 0; 
+        snake_node_count += 1;
+        if(snake_node_count === snake.length - 1) { 
+          breakout = true; 
+          break;
+        }
       }
     }
   }
 
   for(let i = 0; i < snake.length; i++) { 
-    grid[snake[i].x][snake[i].y] = 1; 
+    grid[snake[i].x][snake[i].y] = 1
   }
 
-  setTimeout(function() {
-    if(!pause_timeout) {
-      return move_snake();
+  for(let i = 0; i < grid.length; i++) { 
+    for(let j = 0; j < grid[i].length; j++) { 
+      if(grid[i][j] === 0) {
+        document.querySelector(`#${i}-${j}`).backgroundColor = 'black';
+      } else if(grid[i][j] === 1) { 
+        document.querySelector(`#${i}-${j}`).backgroundColor = 'red';
+      } else { 
+        document.querySelector(`#${i}-${j}`).backgroundColor = 'purple';
+      }
     }
-  }, 1000)
+  }
+
+  return setTimeout(function() { 
+    move_snake()
+  }, 3000)
 
 }
 
+setup_grid();
 move_snake();
+
+</script>
+</html>
