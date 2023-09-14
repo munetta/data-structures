@@ -28,7 +28,7 @@ let grid = [
 ]; 
 
 //USED SO THE SNAKE CAN CONTINUE UPDATING BEFORE MAKING A TURN
-let wait_until_snake_is_done_updating_to_update_direction = 'waiting';
+let wait_until_snake_is_done_updating_to_add_a_turn = 'waiting';
 
 //EVERY SNAKE IS A NODE WITH AN X,Y AND DIRECTION
 let snake = [{ 
@@ -61,7 +61,7 @@ function setup_grid() {
         color = 'purple'
       } else { 
         color = 'black';
-      }
+      }                           //x(up-down) //y(left-right)
       div_element += `<div id = '${i}-${j}' style = 'border: 1px solid ${color}; height: 20px; width: 20px; display: in-line-block; background-color: ${color}></div>`;
     }
     div_element += `<br>`; 
@@ -150,12 +150,11 @@ function move_snake() {
       snake[i].y === snake[i].turns[0].turn_at_y_coordinate 
     ) { 
       snake[i].direction = snake[i].turns[0].direction_for_node_to_turn_in;
-      snake[i].turns.unshift();
+      snake[i].turns.unshift(); 
     }
 
-    //HEAD NODE FOUND AN APPLE
+    //HEAD NODE FOUND AN APPLE - APPEND TO END
     if(i === 0 && grid[snake[i].x][snake[i].y] === 2) { 
-      grid[snake[i].x][snake[i].y] = 0;
       let last_node = snake[snake.length - 1];
       added_snake_after_eating_apple = { 
         x: last_node.direction === 'n' ? last_node.x += 1 : last_node.direction === 's' ? last_node.x -= 1 : last_node.x, 
@@ -165,6 +164,10 @@ function move_snake() {
         turns: last_node.turns
       };
     }
+
+    //MAKE THE CURRENT SNAKE NODE BLACK - BEFORE UPDATE -- THIS IS ITS OLD POSITION
+    grid[snake[i].x][snake[i].y] = 0;
+    document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black';
 
     //MOVE SNAKE NODE
     if(snake[i].direction === 'n') {
@@ -177,6 +180,10 @@ function move_snake() {
       snake[i].y -= 1;
     }
 
+    //MAKE THE CURRENT SNAKE NODE RED - AFTER UPDATE
+    grid[snake[i].x][snake[i].y] = 0;
+    document.querySelector(`#${snake[i].x}-${snake[i].j}`).backgroundColor = 'red';
+
     //SNAKE HEAD MOVED OUT OF BOUNDS
     if(i === 0 && typeof grid[snake[i].x][snake[i].y] === 'undefined') { 
       throw new Error('the snake is off the grid. can not execute above two steps.');
@@ -188,47 +195,6 @@ function move_snake() {
 
   if(added_snake_after_eating_apple !== null) {
     snakes.push(added_snake_after_eating_apple);
-  }
-
-  display_grid();
-
-}
-
-//REMOVE SNAKE FROM GRID, ADD SNAKE TO GRID, DISPLAY
-function display_grid() {
-
-  let snake_node_count = 0;
-  let breakout = false;
-  for(let i = 0; i < grid.length; i++) { 
-    if(breakout) { 
-      break;
-    }
-    for(let j = 0; j < grid[i].length; j++) { 
-      if(grid[i][j] === 1) { 
-        grid[i][j] = 0; 
-        snake_node_count += 1;
-        if(snake_node_count === snake.length - 1) { 
-          breakout = true; 
-          break;
-        }
-      }
-    }
-  }
-
-  for(let i = 0; i < snake.length; i++) { 
-    grid[snake[i].x][snake[i].y] = 1;
-  }
-
-  for(let i = 0; i < grid.length; i++) { 
-    for(let j = 0; j < grid[i].length; j++) { 
-      if(grid[i][j] === 0) {
-        document.querySelector(`#${i}-${j}`).backgroundColor = 'black';
-      } else if(grid[i][j] === 1) { 
-        document.querySelector(`#${i}-${j}`).backgroundColor = 'red';
-      } else { 
-        document.querySelector(`#${i}-${j}`).backgroundColor = 'purple';
-      }
-    }
   }
 
   return setTimeout(function() { 
