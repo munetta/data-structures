@@ -1,6 +1,3 @@
-trying to make snake game. have not run
-change order of x and y - x is north south y is east west
-  
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +11,7 @@ change order of x and y - x is north south y is east west
 <script>
 
 //X IS THE UP/DOWN Y IS THE LEFT RIGHT grid[x][y]
+//GRID IS UPDATED AND USED AS A TEMPLATE TO WORK OFF... 
 let grid = [
   [0,0,0,0,0,0,0,0,0,0], 
   [0,0,0,0,0,0,0,0,0,0],
@@ -61,7 +59,7 @@ function setup_grid() {
         color = 'purple'
       } else { 
         color = 'black';
-      }                           //x(up-down) //y(left-right)
+      }                 //x(up-down)    //y(left-right)
       div_element += `<div id = '${i}-${j}' style = 'border: 1px solid ${color}; height: 20px; width: 20px; display: in-line-block; background-color: ${color}></div>`;
     }
     div_element += `<br>`; 
@@ -141,6 +139,9 @@ function move_snake() {
   wait_until_snake_is_done_updating_to_add_a_turn = 'waiting'; 
   let added_snake_after_eating_apple = null;
 
+  let DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY = [];
+  let DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY = [];
+
   for(let i = 0; i < snake.length; i++) {
 
     //TURNING NODE WHEN LANDING ON TURN POINT
@@ -165,9 +166,21 @@ function move_snake() {
       };
     }
 
-    //MAKE THE CURRENT SNAKE NODE BLACK - BEFORE UPDATE -- THIS IS ITS OLD POSITION
+    //JUST FOR ERROR HANDLING
     grid[snake[i].x][snake[i].y] = 0;
-    document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black';
+
+    //defragment object black new x,y - OPTION 1 FOR DISPLAY
+    DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY.push({
+     x: snake[i].x, 
+     y: snake[i].y
+    });
+
+    //REGULAR TURN SNAKE COLOR BLACK REALLY QUICK, ON THE NEXT ITERATION, WILL BE UPDATED - OPTION 2 DISPLAY
+    document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black'; //ADD CSS FADE IN AFFECT
+
+    //FADE IN AFFECT - OPTION 3 DISPLAY 
+    snake[i].direction === 'n' ? fade_in_north(snake[i].x, snake[i].y, 'red-to-black-fade') : snake[i].direction === 's' ? fade_in_south(snake[i].x, snake[i].y, 'red-to-black-fade') : 
+    snake[i].direction === 'e' ?  fade_in_east(snake[i].x, snake[i].y, 'red-to-black-fade') : snake[i].direction === 'w' ? fade_in_west(snake[i].x, snake[i].y, 'red-to-black-fade') : error_main('bad input request : CSS FADE');
 
     //MOVE SNAKE NODE
     if(snake[i].direction === 'n') {
@@ -180,16 +193,33 @@ function move_snake() {
       snake[i].y -= 1;
     }
 
-    //MAKE THE CURRENT SNAKE NODE RED - AFTER UPDATE
-    grid[snake[i].x][snake[i].y] = 0;
-    document.querySelector(`#${snake[i].x}-${snake[i].j}`).backgroundColor = 'red';
-
     //SNAKE HEAD MOVED OUT OF BOUNDS
     if(i === 0 && typeof grid[snake[i].x][snake[i].y] === 'undefined') { 
-      throw new Error('the snake is off the grid. can not execute above two steps.');
+     error_main('the snake is off the grid. can not execute above two steps : INTERNAL PROCESS ERROR');
+     return;
     }
 
+    //TEMPLATING
+    grid[snake[i].x][snake[i].y] = 1;
+
+    //defragment object black new x,y - OPTION 1 FOR DISPLAY
+    DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY.push({
+     x: snake[i].x, 
+     y: snake[i].y
+    });
+
+    //REGULAR TURN SNAKE COLOR BLACK REALLY QUICK, ON THE NEXT ITERATION, WILL BE UPDATED - OPTION 2 DISPLAY
+    document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'red';
+
+    snake[i].direction === 'n' ? fade_in_north(snake[i].x, snake[i].y, 'black-to-red-fade') : snake[i].direction === 's' ? fade_in_south(snake[i].x, snake[i].y, 'black-to-red-fade') : 
+    snake[i].direction === 'e' ?  fade_in_east(snake[i].x, snake[i].y, 'black-to-red-fade') : snake[i].direction === 'w' ? fade_in_west(snake[i].x, snake[i].y, 'black-to-red-fade') : error_main('bad input request : CSS FADE');
+
   }
+
+  //loop through both document objects and update ui for less delay
+
+//   for(let i = 0; i < document) -- you can skip all but the first here but added just for security. something jordan does not understand as a j man
+
 
   wait_until_snake_is_done_updating_to_add_a_turn = 'finished';
 
@@ -203,9 +233,57 @@ function move_snake() {
 
 }
 
+//PARSE AND RETRY ON : ERROR_MESSAGE
+function error_main(error_message) { 
+  throw new Error(error_message);
+}
+
+//FADE ANIMIMATIONS
+
+function fade_in_north(element_x, element_y, fade_type) {
+  if(fade_type === 'red_to_black_fade') { 
+   document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK'; 
+  } 
+  if(fade_type === 'black_to_red_fade') { 
+   document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
+  }
+}
+
+function fade_in_south(element_x, element_y, fade_type) { 
+  if(fade_type === 'red_to_black_fade') { 
+   document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK';
+  } 
+  if(fade_type === 'black_to_red_fade') { 
+   document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
+  }
+}
+
+function fade_in_east(element_x, element_y, fade_type) { 
+
+    if(fade_type === 'red_to_black') { 
+
+    } 
+
+    if(fade_type === 'black_to_red') { 
+
+    }
+
+}
+
+function fade_in_west(element_x, element_y, fade_type) { 
+
+    if(fade_type === 'red_to_black') { 
+
+    } 
+
+    if(fade_type === 'black_to_red') { 
+
+    }
+
+}
+
 setup_grid();
 move_snake();
 
 </script>
 </html>
-
