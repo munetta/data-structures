@@ -1,3 +1,5 @@
+//not done - snake game
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,30 +44,36 @@ function setup_grid() {
 
   for(let i = 0; i < grid.length; i++) { 
     for(let j = 0; j < grid[i].length; j++) { 
-      let r = Math.min(Math.random(0,4));
+      let r = Math.floor(Math.random() * 5)
       if(r === 4) { 
         grid[i][j] = 2;
       }
     }
   }
 
-  let div_element = ``;
+  grid[snake[0].x][snake[0].y] = 1;
+
+  let div_element = `<div style = "border-radius: 50%">`;
   for(let i = 0; i < grid.length; i++) { 
     for(let j = 0; j < grid[i].length; j++) { 
       let color;
-      if(grid[i][j] === 1) { 
+      if(grid[i][j] === 1) { //1 is coming from the snake
         color = 'red';
       } else if(grid[i][j] === 2) { 
         color = 'purple'
       } else { 
         color = 'black';
-      }                 //x(up-down)    //y(left-right)
-      div_element += `<div id = '${i}-${j}' style = 'border: 1px solid ${color}; height: 20px; width: 20px; display: in-line-block; background-color: ${color}></div>`;
+      }                 
+      //X/I(UP-DOWN)    
+      //Y/J(LEFT-RIGHT)
+      div_element += `<span id = '${i}-${j}' style = 'border-color: 1px solid ${color}; float: left; height: 20px; width: 20px; display: in-line-block; background-color: ${color}'> </span>`; //not that good at css
     }
     div_element += `<br>`; 
-  }
 
-  document.querySelector('#grid').innerHTML = div_element;
+  }
+  div_element += '</div>';
+
+  document.getElementById('grid').innerHTML = div_element;
 
 }
 
@@ -170,17 +178,17 @@ function move_snake() {
     grid[snake[i].x][snake[i].y] = 0;
 
     //defragment object black new x,y - OPTION 1 FOR DISPLAY
-    DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY.push({
-     x: snake[i].x, 
-     y: snake[i].y
-    });
+    // DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY.push({
+    //  x: snake[i].x, 
+    //  y: snake[i].y
+    // });
 
     //REGULAR TURN SNAKE COLOR BLACK REALLY QUICK, ON THE NEXT ITERATION, WILL BE UPDATED - OPTION 2 DISPLAY
     document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black'; //ADD CSS FADE IN AFFECT
 
     //FADE IN AFFECT - OPTION 3 DISPLAY 
-    snake[i].direction === 'n' ? fade_in_north(snake[i].x, snake[i].y, 'red-to-black-fade') : snake[i].direction === 's' ? fade_in_south(snake[i].x, snake[i].y, 'red-to-black-fade') : 
-    snake[i].direction === 'e' ?  fade_in_east(snake[i].x, snake[i].y, 'red-to-black-fade') : snake[i].direction === 'w' ? fade_in_west(snake[i].x, snake[i].y, 'red-to-black-fade') : error_main('bad input request : CSS FADE');
+    // snake[i].direction === 'n' ? fade_in_north(snake[i].x, snake[i].y, 'red-to-black-fade') : snake[i].direction === 's' ? fade_in_south(snake[i].x, snake[i].y, 'red-to-black-fade') : 
+    // snake[i].direction === 'e' ?  fade_in_east(snake[i].x, snake[i].y, 'red-to-black-fade') : snake[i].direction === 'w' ? fade_in_west(snake[i].x, snake[i].y, 'red-to-black-fade') : error_main('bad input request : CSS_FADE');
 
     //MOVE SNAKE NODE
     if(snake[i].direction === 'n') {
@@ -195,31 +203,35 @@ function move_snake() {
 
     //SNAKE HEAD MOVED OUT OF BOUNDS
     if(i === 0 && typeof grid[snake[i].x][snake[i].y] === 'undefined') { 
-     error_main('the snake is off the grid. can not execute above two steps : INTERNAL PROCESS ERROR');
+     error_main('the snake is off the grid. can not execute above two steps : USER ERROR');
      return;
     }
 
     //TEMPLATING
     grid[snake[i].x][snake[i].y] = 1;
 
-    //defragment object black new x,y - OPTION 1 FOR DISPLAY
-    DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY.push({
-     x: snake[i].x, 
-     y: snake[i].y
-    });
+    //OPTION 1 FOR LEAST COPMUTED RESPONSE - DISPLAY
+    // DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY.push({
+    //  x: snake[i].x, 
+    //  y: snake[i].y
+    // });
 
-    //REGULAR TURN SNAKE COLOR BLACK REALLY QUICK, ON THE NEXT ITERATION, WILL BE UPDATED - OPTION 2 DISPLAY
+    //REGULAR TURN SNAKE COLOR BLACK REALLY QUICK, ON THE NEXT ITERATION, WILL BE UPDATED - OPTION 2 DISPLAY - medium COMPUTED
     document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'red';
 
-    snake[i].direction === 'n' ? fade_in_north(snake[i].x, snake[i].y, 'black-to-red-fade') : snake[i].direction === 's' ? fade_in_south(snake[i].x, snake[i].y, 'black-to-red-fade') : 
-    snake[i].direction === 'e' ?  fade_in_east(snake[i].x, snake[i].y, 'black-to-red-fade') : snake[i].direction === 'w' ? fade_in_west(snake[i].x, snake[i].y, 'black-to-red-fade') : error_main('bad input request : CSS FADE');
+    //FADE IN AFFECT - OPTION 3 DISPLAY -- MOST COMPUTED -- MAYBE JUST DO IT ON LAST
+    // snake[i].direction === 'n' ? fade_in_north(snake[i].x, snake[i].y, 'black-to-red-fade') : snake[i].direction === 's' ? fade_in_south(snake[i].x, snake[i].y, 'black-to-red-fade') : 
+    // snake[i].direction === 'e' ?  fade_in_east(snake[i].x, snake[i].y, 'black-to-red-fade') : snake[i].direction === 'w' ? fade_in_west(snake[i].x, snake[i].y, 'black-to-red-fade') : error_main('bad input request : CSS_FADE');
 
   }
 
-  //loop through both document objects and update ui for less delay
-
-//   for(let i = 0; i < document) -- you can skip all but the first here but added just for security. something jordan does not understand as a j man
-
+  //OPTION FOR DISPLAY OPTION 1
+  // for(let i = 0; i < DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY.length; i++) { 
+  //   document.querySelector(`#${DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY[i].x}-${DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY[i].y}`).backgroundColor = 'red';
+  // }
+  // for(let i = 0; i < DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY.length; i++) { 
+  //   document.querySelector(`#${DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY[i].x}-${DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY[i].y}`).backgroundColor = 'red';
+  // }
 
   wait_until_snake_is_done_updating_to_add_a_turn = 'finished';
 
@@ -239,51 +251,44 @@ function error_main(error_message) {
 }
 
 //FADE ANIMIMATIONS
+// function fade_in_north(element_x, element_y, fade_type) {
+//   if(fade_type === 'red_to_black_fade') { 
+//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK'; 
+//   } 
+//   if(fade_type === 'black_to_red_fade') { 
+//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
+//   }
+// }
 
-function fade_in_north(element_x, element_y, fade_type) {
-  if(fade_type === 'red_to_black_fade') { 
-   document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK'; 
-  } 
-  if(fade_type === 'black_to_red_fade') { 
-   document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
-  }
-}
+// function fade_in_south(element_x, element_y, fade_type) { 
+//   if(fade_type === 'red_to_black_fade') { 
+//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK';
+//   } 
+//   if(fade_type === 'black_to_red_fade') { 
+//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
+//   }
+// }
 
-function fade_in_south(element_x, element_y, fade_type) { 
-  if(fade_type === 'red_to_black_fade') { 
-   document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK';
-  } 
-  if(fade_type === 'black_to_red_fade') { 
-   document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
-  }
-}
+// function fade_in_east(element_x, element_y, fade_type) { 
+//   if(fade_type === 'red_to_black_fade') { 
+//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK';
+//   } 
+//   if(fade_type === 'black_to_red_fade') { 
+//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
+//   }
+// }
 
-function fade_in_east(element_x, element_y, fade_type) { 
-
-    if(fade_type === 'red_to_black') { 
-
-    } 
-
-    if(fade_type === 'black_to_red') { 
-
-    }
-
-}
-
-function fade_in_west(element_x, element_y, fade_type) { 
-
-    if(fade_type === 'red_to_black') { 
-
-    } 
-
-    if(fade_type === 'black_to_red') { 
-
-    }
-
-}
+// function fade_in_west(element_x, element_y, fade_type) { 
+//   if(fade_type === 'red_to_black_fade') { 
+//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK';
+//   } 
+//   if(fade_type === 'black_to_red_fade') { 
+//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
+//   }
+// }
 
 setup_grid();
-move_snake();
+//move_snake();
 
 </script>
 </html>
