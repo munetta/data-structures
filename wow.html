@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Document</title>
 </head>
-<body
-  INCOMPLETE
+<body>
 <div id = 'grid'></div>
 </body>
 <script>
@@ -132,6 +131,7 @@ function go_east() {
   } 
 } 
 
+//ITERATE THROUGH SNAKE AND FOR EACH NODE EVALUATE THE DIRECTION -> THEN TAKE A STEP
 function move_snake() { 
 
   let add_snake_after_all_has_moved = false;
@@ -185,18 +185,18 @@ function move_snake() {
 
   }
 
-  //ADDING A SNAKE NODE FOR THE NEXT ITERATION - 
+  //ADDING A SNAKE NODE FOR THE NEXT ITERATION - COPYING LAST INTO CURRENT LAST
   if(add_snake_after_all_has_moved === true) { 
     let last_node = snake[snake.length - 1];
     snake.push({ 
-      x: last_node.direction === 'n' ? last_node.x += 1 : last_node.direction === 's' ? last_node.x -= 1 : last_node.x, 
-      y: last_node.direction === 'e' ? last_node.y -= 1 : last_node.direction === 'w' ? last_node.y += 1 : last_node.y, 
+      x: last_node.direction === 'n' ? last_node.x + 1 : last_node.direction === 's' ? last_node.x - 1 : last_node.x, 
+      y: last_node.direction === 'e' ? last_node.y - 1 : last_node.direction === 'w' ? last_node.y + 1 : last_node.y, 
       direction: last_node.direction, 
       type_: 'trailing_node', 
-      turns: last_node.turns
+      turns: last_node.turns 
     });
     if(typeof grid[last_node.x][last_node.y] === 'undefined') { 
-      snake.pop(); //pop it... LOUDAAA
+      snake.pop();
     }
   }
 
