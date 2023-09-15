@@ -1,5 +1,4 @@
 //not done - snake game
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,8 +26,11 @@ let grid = [
   [0,0,0,0,0,0,0,0,0,0]
 ]; 
 
+//ITERITIVE ARRAY OF JAVASCRIPT SNAKE GRID SPACES USED TO HANDLE ERRORS. MAYBE IF NECESSARY
+let grid_space = [];
+
 //USED SO THE SNAKE CAN CONTINUE UPDATING BEFORE MAKING A TURN
-let wait_until_snake_is_done_updating_to_add_a_turn = 'waiting';
+let wait_until_snake_is_done_updating_to_adderror_main_a_turn = 'waiting';
 
 //EVERY SNAKE IS A NODE WITH AN X,Y AND DIRECTION
 let snake = [{ 
@@ -94,7 +96,6 @@ document.addEventListener('keydown', (event) => {
 
 function go_south() { 
   if(snake[0].direction === 's' || snake[0].direction === 'n') return;
-  //DONT INTERRUP UPDATING SNAKE
   if(wait_until_snake_is_done_updating_to_add_a_turn === 'waiting') return go_south();
   for(let i = 0; i < snakes.length; i++) { 
     snake[i].turns.push({ 
@@ -147,9 +148,6 @@ function move_snake() {
   wait_until_snake_is_done_updating_to_add_a_turn = 'waiting'; 
   let added_snake_after_eating_apple = null;
 
-  let DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY = [];
-  let DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY = [];
-
   for(let i = 0; i < snake.length; i++) {
 
     //TURNING NODE WHEN LANDING ON TURN POINT
@@ -174,24 +172,13 @@ function move_snake() {
       };
     }
 
-    //JUST FOR ERROR HANDLING
+    //TEMPLATING
     grid[snake[i].x][snake[i].y] = 0;
 
-    //defragment object black new x,y - OPTION 1 FOR DISPLAY
-    // DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY.push({
-    //  x: snake[i].x, 
-    //  y: snake[i].y
-    // });
-
-    //REGULAR TURN SNAKE COLOR BLACK REALLY QUICK, ON THE NEXT ITERATION, WILL BE UPDATED - OPTION 2 DISPLAY
-    // document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black';
+    //THE LAST NODE IS ABOUT TO MOVE 
     if(i === snake.length - 1) { 
-      document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black'; //ADD CSS FADE IN AFFECT
+      document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black';
     }
-
-    //FADE IN AFFECT - OPTION 3 DISPLAY 
-    // snake[i].direction === 'n' ? fade_in_north(snake[i].x, snake[i].y, 'red-to-black-fade') : snake[i].direction === 's' ? fade_in_south(snake[i].x, snake[i].y, 'red-to-black-fade') : 
-    // snake[i].direction === 'e' ?  fade_in_east(snake[i].x, snake[i].y, 'red-to-black-fade') : snake[i].direction === 'w' ? fade_in_west(snake[i].x, snake[i].y, 'red-to-black-fade') : error_main('bad input request : CSS_FADE');
 
     //MOVE SNAKE NODE
     if(snake[i].direction === 'n') {
@@ -213,33 +200,10 @@ function move_snake() {
     //TEMPLATING
     grid[snake[i].x][snake[i].y] = 1;
 
-    //OPTION 1 FOR LEAST COPMUTED RESPONSE - DISPLAY
-    // DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY.push({
-    //  x: snake[i].x, 
-    //  y: snake[i].y
-    // });
-
-    //REGULAR TURN SNAKE COLOR BLACK REALLY QUICK, ON THE NEXT ITERATION, WILL BE UPDATED - OPTION 2 DISPLAY - medium COMPUTED
+    //moving snke node in next direction - moving all reds in accordance - last red before moving turns black
     document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'red';
 
-    //FADE IN AFFECT - OPTION 3 DISPLAY -- MOST COMPUTED -- MAYBE JUST DO IT ON LAST
-    // snake[i].direction === 'n' ? fade_in_north(snake[i].x, snake[i].y, 'black-to-red-fade') : snake[i].direction === 's' ? fade_in_south(snake[i].x, snake[i].y, 'black-to-red-fade') : 
-    // snake[i].direction === 'e' ?  fade_in_east(snake[i].x, snake[i].y, 'black-to-red-fade') : snake[i].direction === 'w' ? fade_in_west(snake[i].x, snake[i].y, 'black-to-red-fade') : error_main('bad input request : CSS_FADE');
-
   }
-
-  //just update
-
-  //OPTION FOR DISPLAY OPTION 1
-  // for(let i = 0; i < DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY.length; i++) { 
-  //   document.querySelector(`#${DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY[i].x}-${DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY[i].y}`).backgroundColor = 'red';
-  // }
-  // for(let i = 0; i < DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY.length; i++) { 
-  //   document.querySelector(`#${DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY[i].x}-${DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY[i].y}`).backgroundColor = 'red';
-  // }
-
-  //OPTION DISPLAY 4 
-
 
   wait_until_snake_is_done_updating_to_add_a_turn = 'finished';
 
@@ -258,49 +222,8 @@ function error_main(error_message) {
   throw new Error(error_message);
 }
 
-//FADE ANIMIMATIONS
-// function fade_in_north(element_x, element_y, fade_type) {
-//   if(fade_type === 'red_to_black_fade') { 
-//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK'; 
-//   } 
-//   if(fade_type === 'black_to_red_fade') { 
-//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
-//   }
-// }
-
-// function fade_in_south(element_x, element_y, fade_type) { 
-//   if(fade_type === 'red_to_black_fade') { 
-//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK';
-//   } 
-//   if(fade_type === 'black_to_red_fade') { 
-//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
-//   }
-// }
-
-// function fade_in_east(element_x, element_y, fade_type) { 
-//   if(fade_type === 'red_to_black_fade') { 
-//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK';
-//   } 
-//   if(fade_type === 'black_to_red_fade') { 
-//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
-//   }
-// }
-
-// function fade_in_west(element_x, element_y, fade_type) { 
-//   if(fade_type === 'red_to_black_fade') { 
-//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'BLACK';
-//   } 
-//   if(fade_type === 'black_to_red_fade') { 
-//    document.querySelector(`${element_x}-${element_y}`).backgroundColor = 'RED';
-//   }
-// }
-
 setup_grid();
 //move_snake();
-
-</script>
-</html>
-
 
 </script>
 </html>
