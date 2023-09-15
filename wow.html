@@ -1,4 +1,3 @@
-//not done - snake game
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Document</title>
 </head>
-<body>
+<body
+  INCOMPLETE
 <div id = 'grid'></div>
 </body>
 <script>
@@ -134,6 +134,8 @@ function go_east() {
 
 function move_snake() { 
 
+  let add_snake_after_all_has_moved = false;
+
   for(let i = 0; i < snake.length; i++) {
 
     //TURNING NODE WHEN LANDING ON TURN POINT
@@ -147,18 +149,8 @@ function move_snake() {
     }
 
     //HEAD NODE FOUND AN APPLE - APPEND TO END
-    alert(grid[snake[i].x][snake[i].y]);
-    alert(snake.length);
     if(i === 0 && grid[snake[i].x][snake[i].y] === 2) { 
-      alert('landed on');
-      let last_node = snake[snake.length - 1];
-      snake.push({ 
-        x: last_node.direction === 'n' ? last_node.x += 1 : last_node.direction === 's' ? last_node.x -= 1 : last_node.x, 
-        y: last_node.direction === 'e' ? last_node.y -= 1 : last_node.direction === 'w' ? last_node.y += 1 : last_node.y, 
-        direction: last_node.direction, 
-        type_: 'trailing_node', 
-        turns: last_node.turns
-      });
+      add_snake_after_all_has_moved = true;
     }
 
     //TEMPLATING
@@ -193,6 +185,21 @@ function move_snake() {
 
   }
 
+  //ADDING A SNAKE NODE FOR THE NEXT ITERATION - 
+  if(add_snake_after_all_has_moved === true) { 
+    let last_node = snake[snake.length - 1];
+    snake.push({ 
+      x: last_node.direction === 'n' ? last_node.x += 1 : last_node.direction === 's' ? last_node.x -= 1 : last_node.x, 
+      y: last_node.direction === 'e' ? last_node.y -= 1 : last_node.direction === 'w' ? last_node.y += 1 : last_node.y, 
+      direction: last_node.direction, 
+      type_: 'trailing_node', 
+      turns: last_node.turns
+    });
+    if(typeof grid[last_node.x][last_node.y] === 'undefined') { 
+      snake.pop(); //pop it... LOUDAAA
+    }
+  }
+
   //SNAKE RAN INTO ITSELF
   for(let i = snake.length - 1; i > 0; i--) { 
     if(snake[i].x === snake[0].x && snake[i].y === snake[0].y) { 
@@ -216,10 +223,6 @@ function error_main(error_message) {
 
 setup_grid();
 //move_snake();
-
-</script>
-</html>
-
 
 </script>
 </html>
