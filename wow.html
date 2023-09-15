@@ -1,3 +1,5 @@
+ALMOST DONE
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,10 +9,10 @@
 </head>
 <body>
 <div id = 'grid'></div>
-</body>
+
 <script>
 
-//GRID IS UPDATED AND USED AS A TEMPLATE TO WORK OFF OF... 
+//GRID IS UPDATED AND USED AS A TEMPLATE TO WORK OFF OF...  CREATE DIMENSION INPUT FUNCTION
 let grid = [
   [0,0,0,0,0,0,0,0,0,0], 
   [0,0,0,0,0,0,0,0,0,0],
@@ -24,10 +26,10 @@ let grid = [
   [0,0,0,0,0,0,0,0,0,0]
 ]; 
 
-//ITERITIVE ARRAY OF JAVASCRIPT SNAKE GRID SPACES USED TO DISPLAY STEPS. MAYBE IF NECESSARY
+//GRID SPACES USED TO DISPLAY STEPS. MAYBE IF NECESSARY
 let grid_space = [];
 
-//EVERY SNAKE IS A NODE WITH AN X,Y AND DIRECTION
+//SNAKE NODES WITH AN X,Y AND DIRECTION
 let snake = [{ 
   x: 0, 
   y: 0, 
@@ -75,15 +77,15 @@ function setup_grid() {
 //ADD A TURN TO EVERY NODE. THE TURN STARTS WHERE THE HEAD NODE IS.
 document.addEventListener('keydown', (event) => {
   alert(event.key);
-  // if(event.key ===  'ArrowRight') { 
-  //   go_east();
-  // } else if(event.key ===  'ArrowWest') { 
-  //   go_west();
-  // } else if(event.key ===  'ArrowUp') { 
-  //   go_north();
-  // } else if(event.key === 'ArrowDown') { 
-  //   go_south();
-  // }
+   if(event.key ===  'ArrowRight') { 
+     go_east();
+   } else if(event.key ===  'ArrowLeft') { 
+     go_west();
+   } else if(event.key ===  'ArrowUp') { 
+     go_north();
+   } else if(event.key === 'ArrowDown') { 
+     go_south();
+   }
   move_snake();
 });
 
@@ -131,7 +133,6 @@ function go_east() {
   } 
 } 
 
-//ITERATE THROUGH SNAKE AND FOR EACH NODE EVALUATE THE DIRECTION -> THEN TAKE A STEP
 function move_snake() { 
 
   let add_snake_after_all_has_moved = false;
@@ -144,8 +145,11 @@ function move_snake() {
       snake[i].x === snake[i].turns[0].turn_at_x_coordinate && 
       snake[i].y === snake[i].turns[0].turn_at_y_coordinate 
     ) { 
+            alert(JSON.stringify(snake))
       snake[i].direction = snake[i].turns[0].direction_for_node_to_turn_in;
-      snake[i].turns.unshift(); 
+      snake[i].turns.shift(); 
+            alert(JSON.stringify(snake))
+
     }
 
     //HEAD NODE FOUND AN APPLE - APPEND TO END
@@ -156,7 +160,7 @@ function move_snake() {
     //TEMPLATING
     grid[snake[i].x][snake[i].y] = 0;
 
-    //THE LAST NODE IS ABOUT TO MOVE TO ITS NEXT LOCATION. TURN BLACK
+    //THE LAST NODE IS ABOUT TO MOVE TO ITS NEXT LOCATION. TURN TRAILING BLACK
     if(i === snake.length - 1) { 
       document.getElementById(`${snake[i].x}-${snake[i].y}`).style.backgroundColor = 'black';
     }
@@ -174,19 +178,20 @@ function move_snake() {
 
     //SNAKE HEAD MOVED OUT OF BOUNDS
     if(i === 0 && typeof grid[snake[i].x][snake[i].y] === 'undefined') { 
-     return 'END GAME BECAUSE SNAKE RAN IS OF BOUNDS';
+     return 'END GAME BECAUSE SNAKE RAN OUT OF BOUNDS';
     }
 
     //TEMPLATING
     grid[snake[i].x][snake[i].y] = 1;
 
-    //PUSHING ALL REDS ALONG
+    //PUSHING ALL REDS ALONG - LEAST COMPUTED DOCUMENT UPDATE COMPARED TO ALL THE OTHER SNAKE GAMES OUT THERE
     document.getElementById(`${snake[i].x}-${snake[i].y}`).style.backgroundColor = 'red';
 
   }
 
   //ADDING A SNAKE NODE FOR THE NEXT ITERATION - COPYING LAST INTO CURRENT LAST
   if(add_snake_after_all_has_moved === true) { 
+     alert('cool');
     let last_node = snake[snake.length - 1];
     snake.push({ 
       x: last_node.direction === 'n' ? last_node.x + 1 : last_node.direction === 's' ? last_node.x - 1 : last_node.x, 
@@ -225,4 +230,5 @@ setup_grid();
 //move_snake();
 
 </script>
+</body>
 </html>
