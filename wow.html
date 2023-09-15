@@ -11,13 +11,12 @@
 </body>
 <script>
 
-//X IS THE UP/DOWN Y IS THE LEFT RIGHT grid[x][y]
-//GRID IS UPDATED AND USED AS A TEMPLATE TO WORK OFF... 
+//GRID IS UPDATED AND USED AS A TEMPLATE TO WORK OFF OF... 
 let grid = [
   [0,0,0,0,0,0,0,0,0,0], 
   [0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0]
+  [0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,0,0,0],
@@ -26,11 +25,8 @@ let grid = [
   [0,0,0,0,0,0,0,0,0,0]
 ]; 
 
-//ITERITIVE ARRAY OF JAVASCRIPT SNAKE GRID SPACES USED TO HANDLE ERRORS. MAYBE IF NECESSARY
+//ITERITIVE ARRAY OF JAVASCRIPT SNAKE GRID SPACES USED TO DISPLAY STEPS. MAYBE IF NECESSARY
 let grid_space = [];
-
-//USED SO THE SNAKE CAN CONTINUE UPDATING BEFORE MAKING A TURN
-let wait_until_snake_is_done_updating_to_adderror_main_a_turn = 'waiting';
 
 //EVERY SNAKE IS A NODE WITH AN X,Y AND DIRECTION
 let snake = [{ 
@@ -39,9 +35,9 @@ let snake = [{
   direction: 's', 
   type_: 'leading_node', 
   turns: []
-}];  
+}]; 
 
-//PLACE APPLES, CREATE ELEMENTS WITH ID'S AS GRID I-J
+//PLACE APPLES, CREATE ELEMENTS
 function setup_grid() {
 
   for(let i = 0; i < grid.length; i++) { 
@@ -59,16 +55,14 @@ function setup_grid() {
   for(let i = 0; i < grid.length; i++) { 
     for(let j = 0; j < grid[i].length; j++) { 
       let color;
-      if(grid[i][j] === 1) { //1 is coming from the snake
+      if(grid[i][j] === 1) { 
         color = 'red';
       } else if(grid[i][j] === 2) { 
         color = 'purple'
       } else { 
         color = 'black';
       }                 
-      //X/I(UP-DOWN)    
-      //Y/J(LEFT-RIGHT)
-      div_element += `<span id = '${i}-${j}' style = 'border-color: 1px solid ${color}; float: left; height: 20px; width: 20px; display: in-line-block; background-color: ${color}'> </span>`; //not that good at css
+      div_element += `<span id = '${i}-${j}' style = 'border-color: 1px solid ${color}; float: left; height: 20px; width: 20px; display: in-line-block; background-color: ${color}'> </span>`;
     }
     div_element += `<br>`; 
 
@@ -79,25 +73,24 @@ function setup_grid() {
 
 }
 
-//ADD A TURN TO EVERY NODE. THE TURN STARTS WHERE THE HEAD NODE IS. DON'T INTERRUPT UPDATING SNAKE.
+//ADD A TURN TO EVERY NODE. THE TURN STARTS WHERE THE HEAD NODE IS.
 document.addEventListener('keydown', (event) => {
-  if(event.key ===  37) { 
-    go_east();
-  } else if(event.key ===  39) { 
-    go_west();
-  } else if(event.key ===  38) { 
-    go_north();
-  } else if(event.key ===  40) { 
-    go_south();
-  } else { 
-    return;
-  }
+  alert(event.key);
+  // if(event.key ===  'ArrowRight') { 
+  //   go_east();
+  // } else if(event.key ===  'ArrowWest') { 
+  //   go_west();
+  // } else if(event.key ===  'ArrowUp') { 
+  //   go_north();
+  // } else if(event.key === 'ArrowDown') { 
+  //   go_south();
+  // }
+  move_snake();
 });
 
 function go_south() { 
   if(snake[0].direction === 's' || snake[0].direction === 'n') return;
-  if(wait_until_snake_is_done_updating_to_add_a_turn === 'waiting') return go_south();
-  for(let i = 0; i < snakes.length; i++) { 
+  for(let i = 0; i < snake.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
       turn_at_y_coordinate: snake[0].y, 
@@ -108,8 +101,7 @@ function go_south() {
 
 function go_north() { 
   if(snake[0].direction === 's' || snake[0].direction === 'n') return;
-  if(wait_until_snake_is_done_updating_to_add_a_turn === 'waiting') return go_north();
-  for(let i = 0; i < snakes.length; i++) { 
+  for(let i = 0; i < snake.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
       turn_at_y_coordinate: snake[0].y, 
@@ -120,8 +112,7 @@ function go_north() {
 
 function go_west() { 
   if(snake[0].direction === 'w' || snake[0].direction === 'e') return;
-  if(wait_until_snake_is_done_updating_to_add_a_turn === 'waiting') return go_west();
-  for(let i = 0; i < snakes.length; i++) { 
+  for(let i = 0; i < snake.length; i++) { 
     snake[i].turns.push({ 
       turn_at_x_coordinate: snake[0].x, 
       turn_at_y_coordinate: snake[0].y, 
@@ -132,8 +123,7 @@ function go_west() {
 
 function go_east() { 
   if(snake[0].direction === 'e' || snake[0].direction === 'w') return;
-  if(wait_until_snake_is_done_updating_to_add_a_turn === 'waiting') return go_east();
-  for(let i = 0; i < snakes.length; i++) { 
+  for(let i = 0; i < snake.length; i++) { 
     snake[i].turns.push({
       turn_at_x_coordinate: snake[0].x, 
       turn_at_y_coordinate: snake[0].y, 
@@ -143,10 +133,6 @@ function go_east() {
 } 
 
 function move_snake() { 
-
-  //USE THIS TO PREVENT THE NEXT TURN FROM BEING EXECUTED
-  wait_until_snake_is_done_updating_to_add_a_turn = 'waiting'; 
-  let added_snake_after_eating_apple = null;
 
   for(let i = 0; i < snake.length; i++) {
 
@@ -161,23 +147,26 @@ function move_snake() {
     }
 
     //HEAD NODE FOUND AN APPLE - APPEND TO END
+    alert(grid[snake[i].x][snake[i].y]);
+    alert(snake.length);
     if(i === 0 && grid[snake[i].x][snake[i].y] === 2) { 
+      alert('landed on');
       let last_node = snake[snake.length - 1];
-      added_snake_after_eating_apple = { 
+      snake.push({ 
         x: last_node.direction === 'n' ? last_node.x += 1 : last_node.direction === 's' ? last_node.x -= 1 : last_node.x, 
         y: last_node.direction === 'e' ? last_node.y -= 1 : last_node.direction === 'w' ? last_node.y += 1 : last_node.y, 
         direction: last_node.direction, 
         type_: 'trailing_node', 
         turns: last_node.turns
-      };
+      });
     }
 
     //TEMPLATING
     grid[snake[i].x][snake[i].y] = 0;
 
-    //THE LAST NODE IS ABOUT TO MOVE 
+    //THE LAST NODE IS ABOUT TO MOVE TO ITS NEXT LOCATION. TURN BLACK
     if(i === snake.length - 1) { 
-      document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black';
+      document.getElementById(`${snake[i].x}-${snake[i].y}`).style.backgroundColor = 'black';
     }
 
     //MOVE SNAKE NODE
@@ -193,27 +182,30 @@ function move_snake() {
 
     //SNAKE HEAD MOVED OUT OF BOUNDS
     if(i === 0 && typeof grid[snake[i].x][snake[i].y] === 'undefined') { 
-     error_main('the snake is off the grid. can not execute above two steps : USER ERROR');
-     return;
+     return 'END GAME BECAUSE SNAKE RAN IS OF BOUNDS';
     }
 
     //TEMPLATING
     grid[snake[i].x][snake[i].y] = 1;
 
-    //moving snke node in next direction - moving all reds in accordance - last red before moving turns black
-    document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'red';
+    //PUSHING ALL REDS ALONG
+    document.getElementById(`${snake[i].x}-${snake[i].y}`).style.backgroundColor = 'red';
 
   }
 
-  wait_until_snake_is_done_updating_to_add_a_turn = 'finished';
-
-  if(added_snake_after_eating_apple !== null) {
-    snakes.push(added_snake_after_eating_apple);
+  //SNAKE RAN INTO ITSELF
+  for(let i = snake.length - 1; i > 0; i--) { 
+    if(snake[i].x === snake[0].x && snake[i].y === snake[0].y) { 
+      return 'END GAME BECAUSE THE SNAKE RAN INTO ITSELF';
+    }
   }
 
-  return setTimeout(function() { 
-    return move_snake()
-  }, 3000)
+  //GRID WITH UPDATED 1's LOCATION
+  grid_space.push(grid);
+
+  // return setTimeout(function() { 
+  //   return move_snake()
+  // }, 250)
 
 }
 
@@ -224,6 +216,10 @@ function error_main(error_message) {
 
 setup_grid();
 //move_snake();
+
+</script>
+</html>
+
 
 </script>
 </html>
