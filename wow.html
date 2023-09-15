@@ -184,7 +184,10 @@ function move_snake() {
     // });
 
     //REGULAR TURN SNAKE COLOR BLACK REALLY QUICK, ON THE NEXT ITERATION, WILL BE UPDATED - OPTION 2 DISPLAY
-    document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black'; //ADD CSS FADE IN AFFECT
+    // document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black';
+    if(i === snake.length - 1) { 
+      document.querySelector(`#${snake[i].x}-${snake[i].y}`).backgroundColor = 'black'; //ADD CSS FADE IN AFFECT
+    }
 
     //FADE IN AFFECT - OPTION 3 DISPLAY 
     // snake[i].direction === 'n' ? fade_in_north(snake[i].x, snake[i].y, 'red-to-black-fade') : snake[i].direction === 's' ? fade_in_south(snake[i].x, snake[i].y, 'red-to-black-fade') : 
@@ -225,6 +228,8 @@ function move_snake() {
 
   }
 
+  //just update
+
   //OPTION FOR DISPLAY OPTION 1
   // for(let i = 0; i < DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY.length; i++) { 
   //   document.querySelector(`#${DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY[i].x}-${DOCUMENT_UPDATE_NEW_BLACK_X_Y_ARRAY[i].y}`).backgroundColor = 'red';
@@ -232,6 +237,9 @@ function move_snake() {
   // for(let i = 0; i < DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY.length; i++) { 
   //   document.querySelector(`#${DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY[i].x}-${DOCUMENT_UPDATE_NEW_RED_X_Y_ARRAY[i].y}`).backgroundColor = 'red';
   // }
+
+  //OPTION DISPLAY 4 
+
 
   wait_until_snake_is_done_updating_to_add_a_turn = 'finished';
 
@@ -289,6 +297,10 @@ function error_main(error_message) {
 
 setup_grid();
 //move_snake();
+
+</script>
+</html>
+
 
 </script>
 </html>
