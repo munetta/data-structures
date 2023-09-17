@@ -62,70 +62,57 @@ function setup_grid() {
       div_element += `<span id = '${i}-${j}' style = 'border-color: 1px solid ${color}; float: left; height: 20px; width: 20px; display: in-line-block; background-color: ${color}'> </span>`;
     }
     div_element += `<br>`; 
-
   }
   div_element += '</div>';
-
   document.getElementById('grid').innerHTML = div_element;
 
 }
 
 document.addEventListener('keydown', (event) => {
+  let direction_one_conditional_parameter_for_returning_out; 
+  let direction_two_conditional_parameter_for_returning_out; 
+  let going_in_direction_parameter_for_adding_turn;
   if(event.key ===  'ArrowRight') { 
-    go_east();
+    direction_one_conditional_parameter_for_returning_out = 'e';
+    direction_two_conditional_parameter_for_returning_out = 'w';
+    going_in_direction_parameter_for_adding_turn = 'e';
   } else if(event.key ===  'ArrowLeft') { 
-    go_west();
+    direction_one_conditional_parameter_for_returning_out = 'e';
+    direction_two_conditional_parameter_for_returning_out = 'w';
+    going_in_direction_parameter_for_adding_turn = 'w';
   } else if(event.key ===  'ArrowUp') { 
-    go_north();
+    direction_one_conditional_parameter_for_returning_out = 'n';
+    direction_two_conditional_parameter_for_returning_out = 's';
+    going_in_direction_parameter_for_adding_turn = 'n';
   } else if(event.key === 'ArrowDown') { 
-    go_south();
+    direction_one_conditional_parameter_for_returning_out = 'n';
+    direction_two_conditional_parameter_for_returning_out = 's';
+    going_in_direction_parameter_for_adding_turn = 's';
   }
+  if(
+    snake[0].direction === direction_one_conditional_parameter_for_returning_out || 
+    snake[0].direction === direction_two_conditional_parameter_for_returning_out
+  ) { 
+   move_snake();
+   return;
+  }
+  for(let i = 0; i < snake.length; i++) { 
+    if(i === 0) { 
+     snake[i].turns = [{ 
+      turn_at_x_coordinate: snake[0].x, 
+      turn_at_y_coordinate: snake[0].y, 
+      direction_for_node_to_turn_in: going_in_direction_parameter_for_adding_turn
+     }]
+    } else {
+     snake[i].turns.push({ 
+      turn_at_x_coordinate: snake[0].x, 
+      turn_at_y_coordinate: snake[0].y, 
+      direction_for_node_to_turn_in: going_in_direction_parameter_for_adding_turn
+    })
+   }
+  } 
   move_snake();
 });
-
-function go_south() { 
-  if(snake[0].direction === 's' || snake[0].direction === 'n') return;
-  for(let i = 0; i < snake.length; i++) { 
-    snake[i].turns.push({ 
-      turn_at_x_coordinate: snake[0].x, 
-      turn_at_y_coordinate: snake[0].y, 
-      direction_for_node_to_turn_in: 's'
-    })
-  } 
-} 
-
-function go_north() { 
-  if(snake[0].direction === 's' || snake[0].direction === 'n') return;
-  for(let i = 0; i < snake.length; i++) { 
-    snake[i].turns.push({ 
-      turn_at_x_coordinate: snake[0].x, 
-      turn_at_y_coordinate: snake[0].y, 
-      direction_for_node_to_turn_in: 'n'
-    })
-  }
-} 
-
-function go_west() { 
-  if(snake[0].direction === 'w' || snake[0].direction === 'e') return;
-  for(let i = 0; i < snake.length; i++) { 
-    snake[i].turns.push({ 
-      turn_at_x_coordinate: snake[0].x, 
-      turn_at_y_coordinate: snake[0].y, 
-      direction_for_node_to_turn_in: 'w'
-    })
-  }
-} 
-
-function go_east() { 
-  if(snake[0].direction === 'e' || snake[0].direction === 'w') return;
-  for(let i = 0; i < snake.length; i++) { 
-    snake[i].turns.push({
-      turn_at_x_coordinate: snake[0].x, 
-      turn_at_y_coordinate: snake[0].y, 
-      direction_for_node_to_turn_in: 'e'
-    })
-  } 
-} 
 
 function move_snake() { 
 
@@ -190,6 +177,8 @@ function move_snake() {
   }
 
   grid_space.push(grid);
+
+  console.log(snake);
 
   // return setTimeout(function() { 
   //   return move_snake()
